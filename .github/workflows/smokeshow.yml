@@ -2,8 +2,8 @@ name: Smokeshow
 
 on:
   workflow_run:
-    workflows: [Test Backend]
-    types: [completed]
+    workflows: [ Test Backend ]
+    types: [ completed ]
 
 jobs:
   smokeshow:

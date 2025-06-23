@@ -11,8 +11,17 @@ export const namePattern = {
   message: "Invalid name",
 }
 
-export const passwordRules = (isRequired = true) => {
-  const rules: any = {
+type ValidationRules = {
+  [key: string]: {
+    value?: any
+    message?: string
+    validate?: (value: string) => boolean | string
+    required?: string
+  }
+}
+
+export const passwordRules = (isRequired = true): ValidationRules => {
+  const rules: ValidationRules = {
     minLength: {
       value: 8,
       message: "Password must be at least 8 characters",
@@ -29,8 +38,8 @@ export const passwordRules = (isRequired = true) => {
 export const confirmPasswordRules = (
   getValues: () => any,
   isRequired = true,
-) => {
-  const rules: any = {
+): ValidationRules => {
+  const rules: ValidationRules = {
     validate: (value: string) => {
       const password = getValues().password || getValues().new_password
       return value === password ? true : "The passwords do not match"
@@ -44,11 +53,17 @@ export const confirmPasswordRules = (
   return rules
 }
 
+type ApiErrorBody = {
+  detail?: string | { msg: string }[]
+}
+
 export const handleError = (err: ApiError) => {
   const { showErrorToast } = useCustomToast()
-  const errDetail = (err.body as any)?.detail
-  let errorMessage = errDetail || "Something went wrong."
-  if (Array.isArray(errDetail) && errDetail.length > 0) {
+  const errDetail = (err.body as ApiErrorBody)?.detail
+  let errorMessage = "Something went wrong."
+  if (typeof errDetail === "string") {
+    errorMessage = errDetail
+  } else if (Array.isArray(errDetail) && errDetail.length > 0) {
     errorMessage = errDetail[0].msg
   }
   showErrorToast(errorMessage)

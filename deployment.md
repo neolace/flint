@@ -4,7 +4,8 @@ You can deploy the project using Docker Compose to a remote server.
 
 This project expects you to have a Traefik proxy handling communication to the outside world and HTTPS certificates.
 
-You can use CI/CD (continuous integration and continuous deployment) systems to deploy automatically, there are already configurations to do it with GitHub Actions.
+You can use CI/CD (continuous integration and continuous deployment) systems to deploy automatically, there are already
+configurations to do it with GitHub Actions.
 
 But you have to configure a couple things first. 🤓
 
@@ -12,8 +13,13 @@ But you have to configure a couple things first. 🤓
 
 * Have a remote server ready and available.
 * Configure the DNS records of your domain to point to the IP of the server you just created.
-* Configure a wildcard subdomain for your domain, so that you can have multiple subdomains for different services, e.g. `*.fastapi-project.example.com`. This will be useful for accessing different components, like `dashboard.fastapi-project.example.com`, `api.fastapi-project.example.com`, `traefik.fastapi-project.example.com`, `adminer.fastapi-project.example.com`, etc. And also for `staging`, like `dashboard.staging.fastapi-project.example.com`, `adminer.staging..fastapi-project.example.com`, etc.
-* Install and configure [Docker](https://docs.docker.com/engine/install/) on the remote server (Docker Engine, not Docker Desktop).
+* Configure a wildcard subdomain for your domain, so that you can have multiple subdomains for different services, e.g.
+  `*.fastapi-project.example.com`. This will be useful for accessing different components, like
+  `dashboard.fastapi-project.example.com`, `api.fastapi-project.example.com`, `traefik.fastapi-project.example.com`,
+  `adminer.fastapi-project.example.com`, etc. And also for `staging`, like
+  `dashboard.staging.fastapi-project.example.com`, `adminer.staging..fastapi-project.example.com`, etc.
+* Install and configure [Docker](https://docs.docker.com/engine/install/) on the remote server (Docker Engine, not
+  Docker Desktop).
 
 ## Public Traefik
 
@@ -29,7 +35,8 @@ You need to do these next steps only once.
 mkdir -p /root/code/traefik-public/
 ```
 
-Copy the Traefik Docker Compose file to your server. You could do it by running the command `rsync` in your local terminal:
+Copy the Traefik Docker Compose file to your server. You could do it by running the command `rsync` in your local
+terminal:
 
 ```bash
 rsync -a docker-compose.traefik.yml root@your-server.example.com:/root/code/traefik-public/
@@ -39,7 +46,9 @@ rsync -a docker-compose.traefik.yml root@your-server.example.com:/root/code/trae
 
 This Traefik will expect a Docker "public network" named `traefik-public` to communicate with your stack(s).
 
-This way, there will be a single public Traefik proxy that handles the communication (HTTP and HTTPS) with the outside world, and then behind that, you could have one or more stacks with different domains, even if they are on the same single server.
+This way, there will be a single public Traefik proxy that handles the communication (HTTP and HTTPS) with the outside
+world, and then behind that, you could have one or more stacks with different domains, even if they are on the same
+single server.
 
 To create a Docker "public network" named `traefik-public` run the following command in your remote server:
 
@@ -49,7 +58,8 @@ docker network create traefik-public
 
 ### Traefik Environment Variables
 
-The Traefik Docker Compose file expects some environment variables to be set in your terminal before starting it. You can do it by running the following commands in your remote server.
+The Traefik Docker Compose file expects some environment variables to be set in your terminal before starting it. You
+can do it by running the following commands in your remote server.
 
 * Create the username for HTTP Basic Auth, e.g.:
 
@@ -63,7 +73,8 @@ export USERNAME=admin
 export PASSWORD=changethis
 ```
 
-* Use openssl to generate the "hashed" version of the password for HTTP Basic Auth and store it in an environment variable:
+* Use openssl to generate the "hashed" version of the password for HTTP Basic Auth and store it in an environment
+  variable:
 
 ```bash
 export HASHED_PASSWORD=$(openssl passwd -apr1 $PASSWORD)
@@ -97,7 +108,8 @@ Go to the directory where you copied the Traefik Docker Compose file in your rem
 cd /root/code/traefik-public/
 ```
 
-Now with the environment variables set and the `docker-compose.traefik.yml` in place, you can start the Traefik Docker Compose running the following command:
+Now with the environment variables set and the `docker-compose.traefik.yml` in place, you can start the Traefik Docker
+Compose running the following command:
 
 ```bash
 docker compose -f docker-compose.traefik.yml up -d
@@ -113,13 +125,15 @@ Now that you have Traefik in place you can deploy your FastAPI project with Dock
 
 You need to set some environment variables first.
 
-Set the `ENVIRONMENT`, by default `local` (for development), but when deploying to a server you would put something like `staging` or `production`:
+Set the `ENVIRONMENT`, by default `local` (for development), but when deploying to a server you would put something like
+`staging` or `production`:
 
 ```bash
 export ENVIRONMENT=production
 ```
 
-Set the `DOMAIN`, by default `localhost` (for development), but when deploying you would use your own domain, for example:
+Set the `DOMAIN`, by default `localhost` (for development), but when deploying you would use your own domain, for
+example:
 
 ```bash
 export DOMAIN=fastapi-project.example.com
@@ -128,17 +142,22 @@ export DOMAIN=fastapi-project.example.com
 You can set several variables, like:
 
 * `PROJECT_NAME`: The name of the project, used in the API for the docs and emails.
-* `STACK_NAME`: The name of the stack used for Docker Compose labels and project name, this should be different for `staging`, `production`, etc. You could use the same domain replacing dots with dashes, e.g. `fastapi-project-example-com` and `staging-fastapi-project-example-com`.
+* `STACK_NAME`: The name of the stack used for Docker Compose labels and project name, this should be different for
+  `staging`, `production`, etc. You could use the same domain replacing dots with dashes, e.g.
+  `fastapi-project-example-com` and `staging-fastapi-project-example-com`.
 * `BACKEND_CORS_ORIGINS`: A list of allowed CORS origins separated by commas.
 * `SECRET_KEY`: The secret key for the FastAPI project, used to sign tokens.
 * `FIRST_SUPERUSER`: The email of the first superuser, this superuser will be the one that can create new users.
 * `FIRST_SUPERUSER_PASSWORD`: The password of the first superuser.
-* `SMTP_HOST`: The SMTP server host to send emails, this would come from your email provider (E.g. Mailgun, Sparkpost, Sendgrid, etc).
+* `SMTP_HOST`: The SMTP server host to send emails, this would come from your email provider (E.g. Mailgun, Sparkpost,
+  Sendgrid, etc).
 * `SMTP_USER`: The SMTP server user to send emails.
 * `SMTP_PASSWORD`: The SMTP server password to send emails.
 * `EMAILS_FROM_EMAIL`: The email account to send emails from.
-* `POSTGRES_SERVER`: The hostname of the PostgreSQL server. You can leave the default of `db`, provided by the same Docker Compose. You normally wouldn't need to change this unless you are using a third-party provider.
-* `POSTGRES_PORT`: The port of the PostgreSQL server. You can leave the default. You normally wouldn't need to change this unless you are using a third-party provider.
+* `POSTGRES_SERVER`: The hostname of the PostgreSQL server. You can leave the default of `db`, provided by the same
+  Docker Compose. You normally wouldn't need to change this unless you are using a third-party provider.
+* `POSTGRES_PORT`: The port of the PostgreSQL server. You can leave the default. You normally wouldn't need to change
+  this unless you are using a third-party provider.
 * `POSTGRES_PASSWORD`: The Postgres password.
 * `POSTGRES_USER`: The Postgres user, you can leave the default.
 * `POSTGRES_DB`: The database name to use for this application. You can leave the default of `app`.
@@ -148,8 +167,11 @@ You can set several variables, like:
 
 There are some environment variables only used by GitHub Actions that you can configure:
 
-* `LATEST_CHANGES`: Used by the GitHub Action [latest-changes](https://github.com/tiangolo/latest-changes) to automatically add release notes based on the PRs merged. It's a personal access token, read the docs for details.
-* `SMOKESHOW_AUTH_KEY`: Used to handle and publish the code coverage using [Smokeshow](https://github.com/samuelcolvin/smokeshow), follow their instructions to create a (free) Smokeshow key.
+* `LATEST_CHANGES`: Used by the GitHub Action [latest-changes](https://github.com/tiangolo/latest-changes) to
+  automatically add release notes based on the PRs merged. It's a personal access token, read the docs for details.
+* `SMOKESHOW_AUTH_KEY`: Used to handle and publish the code coverage
+  using [Smokeshow](https://github.com/samuelcolvin/smokeshow), follow their instructions to create a (free) Smokeshow
+  key.
 
 ### Generate secret keys
 
@@ -171,7 +193,8 @@ With the environment variables in place, you can deploy with Docker Compose:
 docker compose -f docker-compose.yml up -d
 ```
 
-For production you wouldn't want to have the overrides in `docker-compose.override.yml`, that's why we explicitly specify `docker-compose.yml` as the file to use.
+For production you wouldn't want to have the overrides in `docker-compose.override.yml`, that's why we explicitly
+specify `docker-compose.yml` as the file to use.
 
 ## Continuous Deployment (CD)
 
@@ -211,15 +234,18 @@ cd
 
 * When asked about labels, add a label for the environment, e.g. `production`. You can also add labels later.
 
-After installing, the guide would tell you to run a command to start the runner. Nevertheless, it would stop once you terminate that process or if your local connection to your server is lost.
+After installing, the guide would tell you to run a command to start the runner. Nevertheless, it would stop once you
+terminate that process or if your local connection to your server is lost.
 
-To make sure it runs on startup and continues running, you can install it as a service. To do that, exit the `github` user and go back to the `root` user:
+To make sure it runs on startup and continues running, you can install it as a service. To do that, exit the `github`
+user and go back to the `root` user:
 
 ```bash
 exit
 ```
 
-After you do it, you will be on the previous user again. And you will be on the previous directory, belonging to that user.
+After you do it, you will be on the previous user again. And you will be on the previous directory, belonging to that
+user.
 
 Before being able to go the `github` user directory, you need to become the `root` user (you might already be):
 
@@ -251,11 +277,14 @@ cd /home/github/actions-runner
 ./svc.sh status
 ```
 
-You can read more about it in the official guide: [Configuring the self-hosted runner application as a service](https://docs.github.com/en/actions/hosting-your-own-runners/managing-self-hosted-runners/configuring-the-self-hosted-runner-application-as-a-service).
+You can read more about it in the official
+guide: [Configuring the self-hosted runner application as a service](https://docs.github.com/en/actions/hosting-your-own-runners/managing-self-hosted-runners/configuring-the-self-hosted-runner-application-as-a-service).
 
 ### Set Secrets
 
-On your repository, configure secrets for the environment variables you need, the same ones described above, including `SECRET_KEY`, etc. Follow the [official GitHub guide for setting repository secrets](https://docs.github.com/en/actions/security-guides/using-secrets-in-github-actions#creating-secrets-for-a-repository).
+On your repository, configure secrets for the environment variables you need, the same ones described above, including
+`SECRET_KEY`, etc. Follow
+the [official GitHub guide for setting repository secrets](https://docs.github.com/en/actions/security-guides/using-secrets-in-github-actions#creating-secrets-for-a-repository).
 
 The current Github Actions workflows expect these secrets:
 
@@ -273,7 +302,8 @@ The current Github Actions workflows expect these secrets:
 
 ## GitHub Action Deployment Workflows
 
-There are GitHub Action workflows in the `.github/workflows` directory already configured for deploying to the environments (GitHub Actions runners with the labels):
+There are GitHub Action workflows in the `.github/workflows` directory already configured for deploying to the
+environments (GitHub Actions runners with the labels):
 
 * `staging`: after pushing (or merging) to the branch `master`.
 * `production`: after publishing a release.

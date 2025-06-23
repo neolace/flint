@@ -1,3 +1,4 @@
+#file: noinspection ComposeUnquotedPorts
 services:
 
   # Local services are available on their ports, but also available on:
@@ -14,7 +15,7 @@ services:
       - "8090:8080"
     # Duplicate the command from docker-compose.yml to add --api.insecure=true
     command:
-      # Enable Docker in Traefik, so that it reads labels from Docker services
+      # Enable Docker in Traefik so that it reads labels from Docker services
       - --providers.docker
       # Add a constraint to only use services with the label for this stack
       - --providers.docker.constraints=Label(`traefik.constraint-label`, `traefik-public`)
@@ -35,7 +36,7 @@ services:
       # Enable the Dashboard and API in insecure mode for local development
       - --api.insecure=true
     labels:
-      # Enable Traefik for this service, to make it available in the public network
+      # Enable Traefik for this service to make it available in the public network
       - traefik.enable=true
       - traefik.constraint-label=traefik-public
       # Dummy https-redirect middleware that doesn't really redirect, only to
@@ -61,7 +62,7 @@ services:
       - "8000:8000"
     build:
       context: ./backend
-    # command: sleep infinity  # Infinite loop to keep container alive doing nothing
+    # command: sleep infinity # Infinite loop to keep container alive doing nothing
     command:
       - fastapi
       - run
