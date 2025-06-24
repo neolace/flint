@@ -13,7 +13,7 @@ export const namePattern = {
 
 type ValidationRules = {
   [key: string]: {
-    value?: any
+    value?: string | number | RegExp
     message?: string
     validate?: (value: string) => boolean | string
     required?: string
