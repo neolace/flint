@@ -52,8 +52,11 @@ function ItemsTable() {
 
   const setPage = (page: number) =>
     navigate({
-      search: (prev: { [key: string]: string }) => ({ ...prev, page }),
-    })
+    search: (prev: { [key: string]: string }) => ({
+      ...prev,
+      page: String(page), // ensure string
+    }),
+  });
 
   const items = data?.data.slice(0, PER_PAGE) ?? []
   const count = data?.count ?? 0

@@ -1,8 +1,5 @@
 from unittest.mock import patch
 
-from fastapi.testclient import TestClient
-from sqlmodel import Session
-
 from app.core.config import settings
 from app.core.security import verify_password
 from app.crud import create_user
@@ -10,6 +7,8 @@ from app.models import UserCreate
 from app.tests.utils.user import user_authentication_headers
 from app.tests.utils.utils import random_email, random_lower_string
 from app.utils import generate_password_reset_token
+from fastapi.testclient import TestClient
+from sqlmodel import Session
 
 
 def test_get_access_token(client: TestClient) -> None:
@@ -34,7 +33,7 @@ def test_get_access_token_incorrect_password(client: TestClient) -> None:
 
 
 def test_use_access_token(
-    client: TestClient, superuser_token_headers: dict[str, str]
+        client: TestClient, superuser_token_headers: dict[str, str]
 ) -> None:
     r = client.post(
         f"{settings.API_V1_STR}/login/test-token",
@@ -46,7 +45,7 @@ def test_use_access_token(
 
 
 def test_recovery_password(
-    client: TestClient, normal_user_token_headers: dict[str, str]
+        client: TestClient, normal_user_token_headers: dict[str, str]
 ) -> None:
     with (
         patch("app.core.config.settings.SMTP_HOST", "smtp.example.com"),
@@ -62,7 +61,7 @@ def test_recovery_password(
 
 
 def test_recovery_password_user_not_exits(
-    client: TestClient, normal_user_token_headers: dict[str, str]
+        client: TestClient, normal_user_token_headers: dict[str, str]
 ) -> None:
     email = "jVgQr@example.com"
     r = client.post(
@@ -103,7 +102,7 @@ def test_reset_password(client: TestClient, db: Session) -> None:
 
 
 def test_reset_password_invalid_token(
-    client: TestClient, superuser_token_headers: dict[str, str]
+        client: TestClient, superuser_token_headers: dict[str, str]
 ) -> None:
     data = {"new_password": "changethis", "token": "invalid"}
     r = client.post(

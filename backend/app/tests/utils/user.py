@@ -1,14 +1,13 @@
-from fastapi.testclient import TestClient
-from sqlmodel import Session
-
 from app import crud
 from app.core.config import settings
 from app.models import User, UserCreate, UserUpdate
 from app.tests.utils.utils import random_email, random_lower_string
+from fastapi.testclient import TestClient
+from sqlmodel import Session
 
 
 def user_authentication_headers(
-    *, client: TestClient, email: str, password: str
+        *, client: TestClient, email: str, password: str
 ) -> dict[str, str]:
     data = {"username": email, "password": password}
 
@@ -28,7 +27,7 @@ def create_random_user(db: Session) -> User:
 
 
 def authentication_token_from_email(
-    *, client: TestClient, email: str, db: Session
+        *, client: TestClient, email: str, db: Session
 ) -> dict[str, str]:
     """
     Return a valid token for the user with given email.

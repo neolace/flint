@@ -6,15 +6,13 @@ export const buttonRecipe = defineRecipe({
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    colorPalette: "teal",
+    color: "teal.500",
   },
   variants: {
-    variant: {
-      ghost: {
-        bg: "transparent",
-        _hover: {
-          bg: "gray.100",
-        },
+    ghost: {
+      bg: "transparent",
+      _hover: {
+        bg: "gray.100",
       },
     },
   },

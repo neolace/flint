@@ -46,8 +46,11 @@ function UsersTable() {
 
   const setPage = (page: number) =>
     navigate({
-      search: (prev: { [key: string]: string }) => ({ ...prev, page }),
-    })
+    search: (prev: { [key: string]: string }) => ({
+      ...prev,
+      page: String(page), // ensure string
+    }),
+  });
 
   const users = data?.data.slice(0, PER_PAGE) ?? []
   const count = data?.count ?? 0
