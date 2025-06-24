@@ -15,7 +15,7 @@ const Appearance = () => {
 
         <RadioGroup
           onValueChange={(e) => {
-            if (e.value) setTheme(e.value);
+            setTheme(e);
           }}
           value={theme ?? "system"} // fallback to a default
           colorPalette="teal"
