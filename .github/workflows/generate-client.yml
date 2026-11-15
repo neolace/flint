@@ -19,7 +19,7 @@ jobs:
         if: ( github.event_name != 'pull_request' || github.secret_source == 'Actions' )
         with:
           ref: ${{ github.head_ref }}
-          token: ${{ secrets.FULL_STACK_FASTAPI_TEMPLATE_REPO_TOKEN }}
+          token: ${{ secrets.FULL_STACK_FASTAPI_TEMPLATE_REPO_TOKEN || github.token }}
       - uses: actions/setup-node@v4
         with:
           node-version: lts/*
@@ -58,4 +58,3 @@ jobs:
         if: ( github.event_name == 'pull_request' && github.secret_source != 'Actions' )
         run: |
           git diff --staged --quiet || (echo "Changes detected in generated client, run scripts/generate-client.sh and commit the changes" && exit 1)
-
