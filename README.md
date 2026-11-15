@@ -221,7 +221,6 @@ The input variables, with their default values (some auto-generated) are:
   .env.
 - `postgres_password`: (default: `"changethis"`) The password for the PostgreSQL database, stored in .env, you can
   generate one with the method above.
-- `sentry_dsn`: (default: "") The DSN for Sentry, if you are using it, you can set it later in .env.
 
 ## Backend Development
 
